@@ -5,10 +5,14 @@
     /// </summary>
     public class PageRequest
     {
-        public int PageNumber { get; set; } = 1;
-        public int PageSize { get; set; } = 10;
+        public const int MAXPAGESIZE = 100;
 
-        public string? SortBy { get; set; }
-        public bool SortDescending { get; set; } = false;
+        public int PageNumber { get; set; } = 1;
+        private int _pageSize { get; set; } = 10;
+        public int PageSize
+        {
+            get => _pageSize;
+            set => _pageSize = (value > MAXPAGESIZE) ? MAXPAGESIZE : value;
+        }
     }
 }
