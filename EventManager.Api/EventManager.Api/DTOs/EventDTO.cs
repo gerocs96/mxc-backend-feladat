@@ -1,15 +1,21 @@
-﻿namespace EventManager.Api.DTOs
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace EventManager.Api.DTOs
 {
     public class EventDTO
     {
         public int Id { get; set; }
 
-        public string Name { get; set; } = string.Empty;
+        [Required]
+        public string Name { get; set; }
 
-        public string Location { get; set; } = string.Empty;
+        [Required]
+        [MaxLength(100)]
+        public string Location { get; set; }
 
         public string? Country { get; set; }
 
+        [Range(1, int.MaxValue)]
         public int? Capacity { get; set; }
     }
 }
