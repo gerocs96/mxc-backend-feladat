@@ -14,5 +14,9 @@
             get => _pageSize;
             set => _pageSize = (value > MAXPAGESIZE) ? MAXPAGESIZE : value;
         }
+
+        // Sorting
+        public string? SortBy { get; set; }
+        public bool SortDescending { get; set; } = false;
     }
 }

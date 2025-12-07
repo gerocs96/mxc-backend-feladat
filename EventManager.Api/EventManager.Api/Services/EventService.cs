@@ -17,10 +17,18 @@ namespace EventManager.Api.Services
 
         public async Task<PageResponse<EventDTO>> GetPagedAsync(PageRequest request)
         {
+            var property = typeof(Event).GetProperties()
+                .FirstOrDefault(p => string.Equals(p.Name, request.SortBy, StringComparison.OrdinalIgnoreCase));
+
+            var sortProperty = property?.Name ?? "Id";
+
             var query = _db.Events.AsQueryable();
+            query = request.SortDescending
+                ? query.OrderByDescending(e => EF.Property<object>(e, sortProperty))
+                : query.OrderBy(e => EF.Property<object>(e, sortProperty));
+
             var total = await query.CountAsync();
             var items = await query
-                .OrderBy(e => e.Id)
                 .Skip((request.PageNumber - 1) * request.PageSize)
                 .Take(request.PageSize)
                 .Select(e => new EventDTO
