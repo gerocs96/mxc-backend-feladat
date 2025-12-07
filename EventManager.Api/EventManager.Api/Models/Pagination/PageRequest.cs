@@ -16,7 +16,7 @@
         }
 
         // Sorting
-        public string? SortBy { get; set; }
+        public string SortBy { get; set; } = "Id";
         public bool SortDescending { get; set; } = false;
     }
 }

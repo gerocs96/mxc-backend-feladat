@@ -1,5 +1,6 @@
 ﻿using EventManager.Api.Data;
 using EventManager.Api.DTOs;
+using EventManager.Api.Helpers;
 using EventManager.Api.Models;
 using EventManager.Api.Models.Pagination;
 using Microsoft.EntityFrameworkCore;
@@ -17,15 +18,8 @@ namespace EventManager.Api.Services
 
         public async Task<PageResponse<EventDTO>> GetPagedAsync(PageRequest request)
         {
-            var property = typeof(Event).GetProperties()
-                .FirstOrDefault(p => string.Equals(p.Name, request.SortBy, StringComparison.OrdinalIgnoreCase));
-
-            var sortProperty = property?.Name ?? "Id";
-
             var query = _db.Events.AsQueryable();
-            query = request.SortDescending
-                ? query.OrderByDescending(e => EF.Property<object>(e, sortProperty))
-                : query.OrderBy(e => EF.Property<object>(e, sortProperty));
+            query = EventSortingHelper.ApplySorting(query, request.SortBy, request.SortDescending);
 
             var total = await query.CountAsync();
             var items = await query
