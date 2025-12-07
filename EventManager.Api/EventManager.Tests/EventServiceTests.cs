@@ -3,6 +3,7 @@ using EventManager.Api.DTOs;
 using EventManager.Api.Models;
 using EventManager.Api.Models.Pagination;
 using EventManager.Api.Services;
+using EventManager.Tests.Utilities;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 
@@ -10,19 +11,10 @@ namespace EventManager.Tests
 {
     public class EventServiceTests
     {
-        private ApplicationDbContext CreateDbContext()
-        {
-            var options = new DbContextOptionsBuilder<ApplicationDbContext>()
-                .UseInMemoryDatabase(Guid.NewGuid().ToString())
-                .Options;
-
-            return new ApplicationDbContext(options);
-        }
-
         [Fact]
         public async Task CreateAsync_ShouldCreateEvent()
         {
-            var db = CreateDbContext();
+            var db = InMemoryDbContextFactory.CreateContext();
             var service = new EventService(db);
 
             var dto = new EventDTO
@@ -43,7 +35,7 @@ namespace EventManager.Tests
         [Fact]
         public async Task GetByIdAsync_ShouldReturnNull()
         {
-            var db = CreateDbContext();
+            var db = InMemoryDbContextFactory.CreateContext();
             var service = new EventService(db);
 
             var result = await service.GetByIdAsync(999);
@@ -54,11 +46,11 @@ namespace EventManager.Tests
         [Fact]
         public async Task DeleteAsync_ShouldDeleteEvent()
         {
-            var db = CreateDbContext();
+            var db = InMemoryDbContextFactory.CreateContext();
+            var service = new EventService(db);
+
             db.Events.Add(new Event { Id = 1, Name = "Test Event", Location = "Test City" });
             db.SaveChanges();
-
-            var service = new EventService(db);
 
             var success = await service.DeleteAsync(1);
 
@@ -69,7 +61,8 @@ namespace EventManager.Tests
         [Fact]
         public async Task GetPagedAsync_ShouldReturnCorrectPage()
         {
-            var db = CreateDbContext();
+            var db = InMemoryDbContextFactory.CreateContext();
+            var service = new EventService(db);
 
             for (int i = 1; i <= 20; i++)
             {
@@ -77,8 +70,6 @@ namespace EventManager.Tests
             }
 
             db.SaveChanges();
-
-            var service = new EventService(db);
 
             var request = new PageRequest { PageNumber = 2, PageSize = 5 };
 
