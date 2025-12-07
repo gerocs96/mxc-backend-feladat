@@ -6,13 +6,16 @@
 "ConnectionStrings": {
   "DefaultConnection": "Server=.;Database=EventManagerDb;Trusted_Connection=True;"
 }
+```
 
 2. Apply migrations:
-
+```bash
 dotnet ef database update
+```
 
 3. Run the app:
-
+```bash
 dotnet run
+```
 
 https://localhost:7004/swagger/
